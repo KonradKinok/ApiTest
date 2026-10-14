@@ -1,0 +1,54 @@
+.site {
+  max-width: var(--main-width);
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  background-color: var(--main-background);
+}
+
+.pageContainer {
+  // width: min(calc(100% - 3rem), var(--main-width));
+  margin-inline: auto;
+  margin-inline: auto;
+  flex-grow: 1;
+}
+
+.siteHeader {
+  display: flex;
+  gap: 1rem;
+  padding: 2rem;
+  color: var(--color-header-text);
+  background: var(--header-background);
+  border-bottom: 2px solid var(--color-header-border);
+}
+
+.headerContent {
+  min-height: 4.5rem;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-areas: "logo navigation theme";
+  align-items: center;
+  gap: 2rem;
+}
+
+.tooltip:global(.react-tooltip) {
+  --rt-color-dark: var(--color-tooltip-background);
+  --rt-color-white: var(--color-tooltip-text);
+  --rt-color-success: var(--color-tooltip-success);
+  --rt-color-error: var(--color-tooltip-error);
+  --rt-color-warning: var(--color-tooltip-warning);
+  --rt-color-info: var(--color-tooltip-info);
+  --rt-opacity: 1;
+
+  z-index: 100;
+  max-width: min(22rem, calc(100vw - 2rem));
+  box-sizing: border-box;
+  border-radius: var(--radius-medium);
+  font-family: inherit;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+  border: 1px solid var(--color-tooltip-border);
+}

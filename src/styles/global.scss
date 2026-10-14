@@ -1,0 +1,194 @@
+/* bring in normalize.css styles */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --body-background: rgb(50, 0, 0);
+  /* header */
+  --header-background: rgb(7, 0, 109);
+  --header-border-color: rgb(197, 218, 255);
+  --header-text-color: rgb(197, 218, 255);
+  --header-text-hover-color: rgb(108, 162, 255);
+  --header-text-active-color: rgb(17, 0, 255);
+  --header-text-active-background: rgb(224, 255, 255);
+  /* main */
+  --main-width: 1500px;
+  --main-background: rgb(212 209 255);
+  --main-color: rgb(75, 0, 130);
+
+  /* tooltip */
+  --color-tooltip-background: #202e3a;
+  --color-tooltip-border: #758391;
+  --color-tooltip-text: #f1f5f9;
+  --color-tooltip-success: #14532d;
+  --color-tooltip-error: #7f1d1d;
+  --color-tooltip-warning: #713f12;
+  --color-tooltip-info: #164f76;
+
+  /* loader */
+  --color-loader: #005ea8;
+
+  /* toaster */
+  --color-toaster-background: #202e3a;
+  --color-toaster-text: #f1f5f9;
+  --color-toaster-border: #758391;
+  --color-toaster-secondary: #713f12;
+  --color-toaster-success: #14532d;
+  --color-toaster-error: #7f1d1d;
+  --color-toaster-info: #164f76;
+
+  /* title */
+  --title-color-gradient1: rgb(224, 195, 252);
+  --title-color-gradient2: rgb(142, 197, 252);
+  /* combobox */
+  --combobox-text-color: rgb(75, 0, 130);
+  /*Indygo */
+  --combobox-text-hover-color: rgb(224, 255, 255);
+  /*LightCyan */
+  --combobox-text-hover-background: rgb(175, 238, 238);
+  /*PaleTurquoise */
+  --combobox-control-background: rgb(224, 255, 255);
+  /*LightCyan */
+  --combobox-control-border: rgb(138, 43, 226);
+  /*BlueViolet */
+
+
+
+  /*LightCyan */
+
+  /*Indygo */
+
+  /* form */
+  --form-color: rgb(0, 100, 255);
+  --form-field-background: rgb(255, 255, 255);
+  --form-radiobutton-checked-background: rgb(75, 0, 130);
+  --form-radiobutton-unchecked-background: rgba(75, 0, 130, 0.2);
+  --form-radiobutton-unchecked-hover-background: rgba(75, 0, 130, 0.5);
+
+  --checkbox-regular-checked-background: rgb(224, 255, 255);
+  /*LightCyan */
+  --checkbox-regular-unchecked-background: rgb(224, 255, 255);
+  --checkbox-regular-checked-border: rgba(75, 0, 130, 1);
+  --checkbox-regular-unchecked-border: rgba(75, 0, 130, 0.5);
+  --checkbox-regular-checkmark: rgb(75, 0, 130);
+
+  --form-button-color: rgb(224, 255, 255);
+  --form-button-background-first: rgb(75, 0, 130);
+  /*Indygo */
+  --form-button-background-second: rgb(153, 50, 204);
+  /*DarkOrchid */
+
+  /* dateTimePicker */
+  --dateTimePicker-month: rgb(175, 238, 238);
+  /*PaleTurquoise */
+  --dateTimePicker-day-color: rgb(75, 0, 130);
+  /*Indygo */
+  --dateTimePicker-day-hover-color: rgb(224, 255, 255);
+  /*LightCyan */
+  --dateTimePicker-day-hover-background: rgb(75, 0, 130);
+  /*Indygo */
+  --dateTimePicker-day-selected-color: rgb(224, 255, 255);
+  /*LightCyan */
+  --dateTimePicker-day-selected-background: rgb(153, 50, 204);
+  /*DarkOrchid */
+  --dateTimePicker-weekday-color: rgb(75, 0, 130);
+  /*Indygo */
+  --dateTimePicker-todaybutton-color: rgb(224, 255, 255);
+  /*LightCyan */
+  --dateTimePicker-todaybutton-background: rgb(75, 0, 130);
+  /*Indygo */
+  --dateTimePicker-todaybutton-hover-background: rgb(153,
+      50,
+      204);
+  /*DarkOrchid */
+
+  /* dateTimePicker - button*/
+  --dateTimePicker-input-button-color: rgb(75, 0, 130);
+  /*Indygo */
+  --dateTimePicker-input-button-background: rgb(224, 255, 255);
+  /*LightCyan */
+  --dateTimePicker-input-button-border: rgb(75, 0, 130);
+  /*Indygo */
+  --dateTimePicker-input-button-hover-background: rgb(175,
+      238,
+      238);
+  /*PaleTurquoise */
+
+  /* button-up */
+  --button-up-first-gradient: rgb(75, 0, 130);
+  --button-up-second-gradient: rgb(153, 50, 204);
+  /* footer */
+  --footer-background: rgb(75, 0, 130);
+  /*Indygo */
+  --footer-text-color: rgb(224, 255, 255);
+  /*LightCyan */
+  --footer-text-color-hover: rgb(175, 238, 238);
+  --footer-address-color: rgb(86, 194, 227);
+  --footer-address-color-hover: rgb(106, 214, 247);
+  /* mobile-menu */
+  --mobile-menu-open-icon-color: rgb(224, 255, 255);
+  --mobile-menu-open-icon-color-hover: rgb(175, 238, 238);
+  --mobile-menu-background-gradient1: rgb(75, 0, 130);
+  /*Indygo */
+  --mobile-menu-background-gradient2: rgb(138, 43, 226);
+  /*BlueViolet */
+  --mobile-menu-background-gradient3: rgb(148, 0, 211);
+  /*DarkViolet */
+  --mobile-menu-background-gradient4: rgb(238, 130, 238);
+  /*Violet */
+  --mobile-menu-color: rgb(75, 0, 130);
+  --mobile-menu-close-icon-color: rgb(75, 0, 130);
+  --mobile-menu-close-icon-color-hover: rgb(153, 50, 204);
+  /* modal-libraries */
+  --modal-libraries-background: rgba(0, 0, 0, 0.8);
+  --modal-libraries-link-text-color: rgb(135, 206, 235);
+  --modal-libraries-link-text-color-hover: rgb(0, 191, 255);
+  --modal-libraries-icon-color: rgb(135, 206, 250);
+}
+
+body {
+  margin: 0 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--body-background);
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  text-decoration: none;
+}

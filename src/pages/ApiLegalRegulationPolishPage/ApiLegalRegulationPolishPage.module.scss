@@ -1,0 +1,12 @@
+.mainContainer {
+  display: flex;
+  flex-flow: column wrap;
+  gap: 1rem;
+
+  .preJson {
+    min-width: 0;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+}

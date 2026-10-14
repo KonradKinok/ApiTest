@@ -1,0 +1,21 @@
+.fieldset {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1rem;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 1.25rem;
+  border: 1px solid var(--fieldset-border-color);
+  border-radius: var(--radius-medium);
+  background: var(--fieldset-background-color);
+  box-sizing: border-box;
+}
+
+.legend {
+  padding-inline: 0.5rem;
+  color: var(--fieldset-text-color);
+  font-size: 0.75rem;
+  font-weight: 600;
+}

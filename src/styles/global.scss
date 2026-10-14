@@ -8,6 +8,10 @@
 }
 
 :root {
+
+  --radius-small: 0.25rem;
+  --radius-medium: 0.5rem;
+
   --body-background: rgb(50, 0, 0);
   /* header */
   --header-background: rgb(7, 0, 109);
@@ -41,6 +45,11 @@
   --color-toaster-success: #14532d;
   --color-toaster-error: #7f1d1d;
   --color-toaster-info: #164f76;
+
+  /* fieldset */
+  --fieldset-border-color: #758391;
+  --fieldset-background-color: #90bcff;
+  --fieldset-text-color: #713f12;
 
   /* title */
   --title-color-gradient1: rgb(224, 195, 252);

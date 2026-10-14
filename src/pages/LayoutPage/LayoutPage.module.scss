@@ -8,11 +8,12 @@
 }
 
 .pageContainer {
-  // width: min(calc(100% - 3rem), var(--main-width));
-  margin-inline: auto;
+  width: min(calc(100% - 3rem), var(--main-width));
   margin-inline: auto;
   flex-grow: 1;
 }
+
+
 
 .siteHeader {
   display: flex;

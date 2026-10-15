@@ -1,7 +1,7 @@
 .button {
-  --button-background: var(--color-header-background);
-  --button-background-hover: var(--color-header-link-background-active);
-  --button-foreground: var(--color-header-text);
+  --button-background: var(--header-background);
+  --button-background-hover: var(--header-text-active-color);
+  --button-foreground: var(--header-text-color);
   --button-border: color-mix(in srgb, var(--button-background) 82%, white);
   --button-shadow-color: color-mix(in srgb,
       var(--button-background) 38%,

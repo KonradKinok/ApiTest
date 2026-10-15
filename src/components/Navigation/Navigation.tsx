@@ -16,14 +16,7 @@ export function Navigation() {
         to="api-legal-regulation-polish-page"
         className={({ isActive }) => (isActive ? scss.active : "")}
       >
-        Przepisy polskie
-      </NavLink>
-
-      <NavLink
-        to="legalregulations"
-        className={({ isActive }) => (isActive ? scss.active : "")}
-      >
-        inne 2
+        Api
       </NavLink>
     </nav>
   );

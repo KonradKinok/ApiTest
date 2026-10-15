@@ -7,30 +7,20 @@
   background-color: var(--main-background);
 }
 
-.pageContainer {
-  width: min(calc(100% - 3rem), var(--main-width));
-  margin-inline: auto;
-  flex-grow: 1;
-}
-
-
-
 .siteHeader {
   display: flex;
   gap: 1rem;
   padding: 2rem;
-  color: var(--color-header-text);
+  color: var(--header-text-color);
   background: var(--header-background);
-  border-bottom: 2px solid var(--color-header-border);
+  border-bottom: 2px solid var(--header-border-color);
 }
 
-.headerContent {
-  min-height: 4.5rem;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  grid-template-areas: "logo navigation theme";
-  align-items: center;
-  gap: 2rem;
+.pageContainer {
+  width: min(calc(100% - 3rem), var(--main-width));
+  width: 100%;
+  margin-inline: auto;
+  flex-grow: 1;
 }
 
 .tooltip:global(.react-tooltip) {

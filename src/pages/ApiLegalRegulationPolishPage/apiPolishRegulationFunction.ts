@@ -9,7 +9,7 @@ import { queryParametersSearchTitle, type LegalActsResponseSearchTitle, type Typ
 //   responseType: "json",
 // });
 
-const apiClientSejm = axios.create({
+export const apiClientSejm = axios.create({
   baseURL: "https://api.sejm.gov.pl/eli/",
   timeout: 10_000,
   headers: {
@@ -19,7 +19,7 @@ const apiClientSejm = axios.create({
 });
 const searchParams = new URLSearchParams({
   [queryParametersSearchTitle.title.text]: "w sprawie wysokości stawek opłat za korzystanie ze środowiska na rok",
-  [queryParametersSearchTitle.dateFrom.text]: "2024-01-01",
+  [queryParametersSearchTitle.dateFrom.text]: "2023-01-01",
   [queryParametersSearchTitle.limit.text]: "20",
 });
 

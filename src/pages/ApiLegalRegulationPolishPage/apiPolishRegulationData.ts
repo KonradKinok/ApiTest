@@ -74,12 +74,82 @@ export type LegalActsResponseSearchTitle = {
 
 export type TypesLegalAct = string[];
 
+export const httpStatusCodes = [
+  { code: 200, status: "OK", description: "Zwrócono poprawnie dane" },
+  { code: 400, status: "Bad Request", description: "Przesłano błędne żądanie" },
+  { code: 404, status: "Not Found", description: "Nie znaleziono zasobu" },
+]
 
+export const typesLegalActs = {
+  oswiadczenie: "Oświadczenie",
+  umowaZbiorowa: "Umowa zbiorowa",
+  lista: "Lista",
+  konwencja: "Konwencja",
+  komunikat: "Komunikat",
+  uklad: "Układ",
+  oredzie: "Orędzie",
+  zalecenie: "Zalecenie",
+  dokumentWypowiedzenia: "Dokument wypowiedzenia",
+  umowa: "Umowa",
+  wykaz: "Wykaz",
+  oswiadczenieRzadowe: "Oświadczenie rządowe",
+  statut: "Statut",
+  ustawa: "Ustawa",
+  raport: "Raport",
+  apel: "Apel",
+  sprostowanie: "Sprostowanie",
+  pismoOkolne: "Pismo okólne",
+  okolnik: "Okólnik",
+  porozumienie: "Porozumienie",
+  obwieszczenie: "Obwieszczenie",
+  reskrypt: "Reskrypt",
+  przepisy: "Przepisy",
+  dekret: "Dekret",
+  traktat: "Traktat",
+  rozkaz: "Rozkaz",
+  instrukcja: "Instrukcja",
+  sprawozdanie: "Sprawozdanie",
+  opinia: "Opinia",
+  umowaMiedzynarodowa: "Umowa międzynarodowa",
+  wyjasnienie: "Wyjaśnienie",
+  wytyczne: "Wytyczne",
+  decyzja: "Decyzja",
+  wypis: "Wypis",
+  stanowisko: "Stanowisko",
+  przepisyWykonawcze: "Przepisy wykonawcze",
+  rezolucja: "Rezolucja",
+  rozporzadzenie: "Rozporządzenie",
+  karta: "Karta",
+  zawiadomienie: "Zawiadomienie",
+  akt: "Akt",
+  uchwala: "Uchwała",
+  orzeczenie: "Orzeczenie",
+  ogloszenie: "Ogłoszenie",
+  deklaracja: "Deklaracja",
+  regulamin: "Regulamin",
+  protokol: "Protokół",
+  zarzadzenie: "Zarządzenie",
+  informacja: "Informacja",
+  postanowienie: "Postanowienie",
+  interpretacja: "Interpretacja",
+} as const;
 
-
-
-
-
+export const temp = {
+  "list_statuses": "https://api.sejm.gov.pl/eli/statuses",
+  "list_reference_types": "https://api.sejm.gov.pl/eli/references",
+  "list_document_types": "https://api.sejm.gov.pl/eli/types",
+  "list_keywords": "https://api.sejm.gov.pl/eli/keywords",
+  "list_institutions": "https://api.sejm.gov.pl/eli/institutions",
+  "list_publishers": "https://api.sejm.gov.pl/eli/acts",
+  "list_years": "https://api.sejm.gov.pl/eli/acts/{publisher}",
+  "list_acts": "https://api.sejm.gov.pl/eli/acts/{publisher}/{year}",
+  "act_details": "https://api.sejm.gov.pl/eli/acts/{publisher}/{year}/{position}",
+  "act_pdf": "https://api.sejm.gov.pl/eli/acts/{publisher}/{year}/{position}/text.pdf",
+  "act_html": "https://api.sejm.gov.pl/eli/acts/{publisher}/{year}/{position}/text.html",
+  "act_references": "https://api.sejm.gov.pl/eli/acts/{publisher}/{year}/{position}/references",
+  "search": "https://api.sejm.gov.pl/eli/acts/search",
+  "list_changed_acts": "https://api.sejm.gov.pl/eli/changes/acts?since={date}&limit={limit}&offset={offset}"
+};
 
 
 

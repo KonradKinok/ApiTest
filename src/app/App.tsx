@@ -8,6 +8,9 @@ const ApiLegalRegulationPolishPage = lazy(
   () =>
     import("../pages/ApiLegalRegulationPolishPage/ApiLegalRegulationPolishPage"),
 );
+const DisplayLegalActs = lazy(
+  () => import("../pages/DisplayLegalActs/DisplayLegalActs"),
+);
 //OtherPages
 // const NotFoundPage = lazy(() => import("../pages/NotFoundPage/NotFoundPage"));
 
@@ -20,6 +23,10 @@ export default function App() {
           <Route
             path="api-legal-regulation-polish-page"
             element={<ApiLegalRegulationPolishPage />}
+          />
+          <Route
+            path="display-legal-regulation-polish-page"
+            element={<DisplayLegalActs />}
           />
         </Route>
 

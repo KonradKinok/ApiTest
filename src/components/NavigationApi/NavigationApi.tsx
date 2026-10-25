@@ -8,7 +8,13 @@ export function NavigationApi() {
         to="api-legal-regulation-polish-page"
         className={({ isActive }) => (isActive ? scss.active : "")}
       >
-        Przepisy polskie
+        API Przepisy polskie
+      </NavLink>
+      <NavLink
+        to="display-legal-regulation-polish-page"
+        className={({ isActive }) => (isActive ? scss.active : "")}
+      >
+        Pokaż przepisy polskie
       </NavLink>
     </nav>
   );

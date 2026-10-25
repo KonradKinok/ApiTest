@@ -4,46 +4,62 @@ import { FieldsetCustom } from "../../components/CustomControls/FieldsetCustom/F
 import styles from "./ApiLegalRegulationPolishPage.module.scss";
 import { useEffect, useState, type SubmitEvent } from "react";
 import { displayErrorMessage } from "../../globalFunctions/globalFunctions";
-import { getDzU, getTypesLegalAct } from "./apiPolishRegulationFunction";
+import {
+  getDzUToTable,
+  getFirstDzU,
+  // getFirstDzU,
+  getFirstDzUPoRD,
+  getTypesLegalAct,
+} from "./apiPolishRegulationFunction";
 import type { AxiosResponse } from "axios";
-import type {
-  LegalActsResponseSearchTitle,
-  TypesLegalAct,
+import {
+  searchParamsLawsActsConfig,
+  type LegalActDetails,
+  // type LegalActReference,
+  type LegalActsResponseSearchTitle,
+  type LegalActsTable,
+  type TypesLegalAct,
 } from "./apiPolishRegulationData";
 import { useTypesLegalActConfig } from "../../hooks/useTypesLegalActConfig";
 import { useAppContext } from "../../hooks/useAppContext";
 import { useTypesLegalActSearch } from "../../hooks/useTypesLegalActSearch";
+import ApiSingleLegalAct from "./ApiSingleLegalAct";
 
 export default function ApiLegalRegulationPolishPage() {
+  const tempDisplay = false;
   const { typesLegalActs } = useAppContext();
   const [, setTypesLegalAct] = useState<string[]>([]);
   const [axiosAnswer, setAxiosAnswer] =
     useState<AxiosResponse<TypesLegalAct>>();
   const [obwieszczenie, setObwieszczenie] =
-    useState<LegalActsResponseSearchTitle>();
+    useState<LegalActsResponseSearchTitle | null>();
+  const [firstActPoRD, setFirstActPoRD] = useState<LegalActDetails | null>();
+  const [firstAct, setFirstAct] = useState<LegalActsTable | []>([]);
+  const searchParams = new URLSearchParams(searchParamsLawsActsConfig[1]);
 
   const { data, loading, error, getData } = useTypesLegalActConfig();
   const {
-    data: dataActTrwalaUtrata,
-    loading: loadingActTrwalaUtrata,
-    error: errorActTrwalaUtrata,
-    getData: getDataActTrwalaUtrata,
-  } = useTypesLegalActSearch();
+    data: dataAct,
+    loading: loadingAct,
+    error: errorAct,
+    getData: getDataAct,
+  } = useTypesLegalActSearch(searchParams);
 
   const displayTekstBoolean =
-    !errorActTrwalaUtrata &&
-    !loadingActTrwalaUtrata &&
-    dataActTrwalaUtrata &&
-    dataActTrwalaUtrata.totalCount > 0 &&
-    dataActTrwalaUtrata.items.length > 0;
+    !errorAct &&
+    !loadingAct &&
+    dataAct &&
+    dataAct.totalCount > 0 &&
+    dataAct.items.length > 0 &&
+    false;
 
-  useEffect(() => {
-    void getData();
-  }, [getData]);
+  // useEffect(() => {
+  //   void getData();
+  // }, [getData]);
 
-  useEffect(() => {
-    void getDataActTrwalaUtrata();
-  }, [getDataActTrwalaUtrata]);
+  // useEffect(() => {
+  //   void getDataAct();
+  // }, [getDataAct]);
 
   const handleSubmitTypesLegalActs = async (
     event: SubmitEvent<HTMLFormElement>,
@@ -67,12 +83,44 @@ export default function ApiLegalRegulationPolishPage() {
   ) => {
     event.preventDefault();
     try {
-      const response = await getDzU();
-      setObwieszczenie(response);
+      setObwieszczenie(dataAct);
     } catch (error) {
       displayErrorMessage(
         "ApiLegalRegulationPolishPage",
         "handleSubmitSecondForm",
+        error,
+      );
+    }
+  };
+
+  const handleSubmitFirstActPoRD = async (
+    event: SubmitEvent<HTMLFormElement>,
+  ) => {
+    event.preventDefault();
+    try {
+      const result = await getFirstDzU("DU/1997/602");
+      setFirstActPoRD(result);
+    } catch (error) {
+      displayErrorMessage(
+        "ApiLegalRegulationPolishPage",
+        "handleSubmitFirstAct",
+        error,
+      );
+    }
+  };
+
+  const handleSubmitFirstAct = async (event: SubmitEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    try {
+      const result = await getDzUToTable(
+        "DU/1997/602",
+        "prawo o ruchu drogowym",
+      );
+      setFirstAct(result);
+    } catch (error) {
+      displayErrorMessage(
+        "ApiLegalRegulationPolishPage",
+        "handleSubmitFirstAct",
         error,
       );
     }
@@ -111,9 +159,9 @@ export default function ApiLegalRegulationPolishPage() {
       >
         <FieldsetCustom legend="Oblicz termin administracyjny">
           {displayTekstBoolean &&
-            dataActTrwalaUtrata.items.map((item) => {
+            dataAct.items.map((item) => {
               return (
-                <div>
+                <div key={item.ELI}>
                   <p>{`${item.title} (${item.displayAddress})`}</p>
                   <p>{item.ELI}</p>
                   <p>{item.announcementDate}</p>
@@ -150,6 +198,13 @@ export default function ApiLegalRegulationPolishPage() {
                 </div>
               );
             })}
+          {tempDisplay &&
+            searchParamsLawsActsConfig.map((item) => (
+              <ApiSingleLegalAct
+                key={new URLSearchParams(item).toString()}
+                config={item}
+              />
+            ))}
           <pre className={styles.preJson}>
             Wynik: {JSON.stringify(obwieszczenie, null, 2)}{" "}
           </pre>
@@ -160,6 +215,97 @@ export default function ApiLegalRegulationPolishPage() {
             fullWidth
           >
             Obwieszczenie
+          </ButtonUniversal>
+        </FieldsetCustom>
+      </form>
+      <form className={styles.form} onSubmit={handleSubmitFirstActPoRD}>
+        <FieldsetCustom legend="Pierwszy akt prawny PoRD">
+          {/* {searchParamsLawsActsConfig.map((item) => (
+            <ApiSingleLegalAct
+              key={new URLSearchParams(item).toString()}
+              config={item}
+            />
+          ))} */}
+          <pre className={styles.preJson}>
+            Wynik FirstAct PoRD: {JSON.stringify(firstActPoRD, null, 2)}{" "}
+          </pre>
+          <ButtonUniversal
+            className={styles.submitButton}
+            type="submit"
+            icon={<Calculator />}
+            fullWidth
+          >
+            First Act
+          </ButtonUniversal>
+        </FieldsetCustom>
+      </form>
+      <form className={styles.form} onSubmit={handleSubmitFirstAct}>
+        <FieldsetCustom legend="Pierwszy akt prawny">
+          {/* {searchParamsLawsActsConfig.map((item) => (
+            <ApiSingleLegalAct
+              key={new URLSearchParams(item).toString()}
+              config={item}
+            />
+          ))} */}
+          {firstAct &&
+            firstAct.map((item) => (
+              <div key={item.ELI}>
+                <p>ELI: {item.ELI}</p>
+                <p>address: {item.address}</p>
+                <p>announcementDate: {item.announcementDate}</p>
+                <p>publisher: {item.publisher}</p>
+                <p>year: {item.year}</p>
+                <p>volume: {item.volume}</p>
+                <p>pos: {item.pos}</p>
+                <p>title: {item.title}</p>
+                <p>displayAddress: {item.displayAddress}</p>
+                <p>promulgation: {item.promulgation}</p>
+
+                <p>
+                  textPDF{" "}
+                  <a
+                    href={item.textPDF}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {item.textPDF}
+                  </a>
+                </p>
+                <p>
+                  textHTML{" "}
+                  <a
+                    href={item.textHTML}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {item.textHTML}
+                  </a>
+                </p>
+                <p>
+                  textDetails{" "}
+                  <a
+                    href={item.textDetails}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {item.textDetails}
+                  </a>
+                </p>
+                <p>changeDate: {item.changeDate}</p>
+                <p>type: {item.type}</p>
+                <p>status: {item.status}</p>
+              </div>
+            ))}
+          <pre className={styles.preJson}>
+            Wynik FirstAct: {JSON.stringify(firstAct, null, 2)}{" "}
+          </pre>
+          <ButtonUniversal
+            className={styles.submitButton}
+            type="submit"
+            icon={<Calculator />}
+            fullWidth
+          >
+            First Act
           </ButtonUniversal>
         </FieldsetCustom>
       </form>

@@ -72,6 +72,103 @@ export type LegalActsResponseSearchTitle = {
   }[];
 };
 
+
+
+
+
+
+export type LegalActReference = {
+  id?: string;
+  art?: string;
+  date?: string;
+};
+
+// T	Tekst aktu — osobny plik tekstu prezentowany przez ELI.Nie oznacza automatycznie tekstu jednolitego.
+// O	Tekst ogłoszony w dzienniku urzędowym.
+// U	Tekst ujednolicony, uwzględniający naniesione zmiany.
+// H	Tekst w formacie HTML.
+// I	Dodatkowy wariant pliku PDF — nie mam potwierdzonego oficjalnego rozwinięcia tej litery.
+export type LegalActText = {
+  fileName?: string;
+  type?: "T" | "O" | "U" | "H" | "I";
+};
+
+export type LegalActDirective = {
+  address?: string;
+  title?: string;
+  date?: string;
+};
+
+export type LegalActPrint = {
+  term?: number;
+  number?: string;
+  link?: string;
+  linkPrintAPI?: string;
+  linkProcessAPI?: string;
+};
+
+export type LegalActDetails = {
+  // Identyfikacja i publikacja
+  ELI?: string;
+  address?: string;
+  publisher?: string;
+  year?: number;
+  volume?: number;
+  pos?: number;
+  title?: string;
+  displayAddress?: string;
+
+  // Daty — API zwraca je jako stringi
+  promulgation?: string;
+  announcementDate?: string;
+  changeDate?: string;
+  entryIntoForce?: string;
+  validFrom?: string;
+  repealDate?: string;
+  expirationDate?: string;
+  legalStatusDate?: string;
+
+  // Status i dostępność tekstów
+  type?: string;
+  status?: string;
+  inForce?: string;
+  textPDF?: boolean;
+  textHTML?: boolean;
+
+  // Informacje dodatkowe
+  comments?: string;
+  releasedBy?: string[];
+  authorizedBody?: string[];
+  obligated?: string[];
+  keywords?: string[];
+  keywordsNames?: string[];
+  previousTitle?: string[];
+
+  // Dokumenty i powiązania
+  directives?: LegalActDirective[];
+  texts?: LegalActText[];
+  prints?: LegalActPrint[];
+  references?: Partial<Record<string, LegalActReference[]>>;
+};
+export type LegalActsTable = {
+  ELI: string; /** Identyfikator ELI. */
+  address: string; /** Identyfikator w systemie ISAP. */
+  publisher: string; /** Symbol wydawnictwa. */
+  year: number; /** Rok wydania. */
+  volume: number; /** Numer zeszytu. */
+  pos: number; /** Pozycja aktu w roku. */
+  title: string; /** Tytuł aktu. */
+  displayAddress: string; /** Adres do wyświetlenia. */
+  promulgation: string; /** Data ogłoszenia. */
+  announcementDate: string; /** Data wydania. */
+  textPDF: string; /** Link do PDF. */
+  textHTML: string; /** Link do HTML. */
+  textDetails: string;
+  changeDate: string; /** Data ostatniej zmiany. */
+  type: string; /** Typ aktu, np. ustawa. */
+  status: string; /** Status obowiązywania. */
+
+}[];
 export type TypesLegalAct = string[];
 
 export const httpStatusCodes = [
@@ -151,10 +248,36 @@ export const temp = {
   "list_changed_acts": "https://api.sejm.gov.pl/eli/changes/acts?since={date}&limit={limit}&offset={offset}"
 };
 
+export const searchParamsPrawoORuchuDrogowymTJ = {
+  [queryParametersSearchTitle.title.text]: "jednolitego tekstu ustawy - Prawo o ruchu drogowym",
+  [queryParametersSearchTitle.type.text]: typesLegalActs.obwieszczenie,
+  [queryParametersSearchTitle.limit.text]: "1",
+  [queryParametersSearchTitle.inForce.text]: "1",
+  [queryParametersSearchTitle.sortBy.text]: "promulgation",
+  [queryParametersSearchTitle.sortDir.text]: "desc"
+}
+
+export const searchParamsPrawoORuchuDrogowymPoTJ = {
+  [queryParametersSearchTitle.title.text]: "prawo o ruchu drogowym",
+  [queryParametersSearchTitle.limit.text]: "100",
+  [queryParametersSearchTitle.inForce.text]: "1",
+  [queryParametersSearchTitle.sortBy.text]: "promulgation",
+  [queryParametersSearchTitle.sortDir.text]: "desc"
+}
+
+//PoRD
+export const searchParamsLawsActsConfig = [
+  searchParamsPrawoORuchuDrogowymTJ,
+  searchParamsPrawoORuchuDrogowymPoTJ,
+];
 
 
 
-
+export const searchParamsObwieszczenieTrwalaUtrata = {
+  [queryParametersSearchTitle.title.text]: "w sprawie wysokości stawek opłat za korzystanie ze środowiska na rok",
+  [queryParametersSearchTitle.dateFrom.text]: "2023-01-01",
+  [queryParametersSearchTitle.limit.text]: "10",
+}
 
 
 

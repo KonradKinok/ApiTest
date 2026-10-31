@@ -21,7 +21,17 @@ export const useLocalStorage = <T>(
   });
 
   useEffect(() => {
-    window.localStorage.setItem(localStorageKey, JSON.stringify(stateLocalStorage));
+    try {
+      window.localStorage.setItem(
+        localStorageKey,
+        JSON.stringify(stateLocalStorage),
+      );
+    } catch (error) {
+      console.error(
+        `Nie udało się zapisać "${localStorageKey}" w localStorage.`,
+        error,
+      );
+    }
   }, [localStorageKey, stateLocalStorage]);
 
   return [stateLocalStorage, setStateLocalStorage];

@@ -1,5 +1,5 @@
 import axios, { type AxiosResponse } from "axios";
-import { queryParametersSearchTitle, type LegalActDetails, type LegalActsResponseSearchTitle, type LegalActsTable, type TypesLegalAct } from "./apiPolishRegulationData"
+import { polishActApiUrls, queryParametersSearchTitle, type LegalActDetails, type LegalActReference, type LegalActsResponseSearchTitle, type LegalActsTable, type TypesLegalAct } from "./apiPolishRegulationData"
 // const apiClientEli = axios.create({
 //   baseURL: "https://eli.gov.pl/eli/",
 //   timeout: 10_000,
@@ -35,8 +35,15 @@ export const searchParamsPrawoORuchuDrogowymPoTJ = {
 
 
 
-export async function getDzUBySearchParams(searchParams: URLSearchParams): Promise<LegalActsResponseSearchTitle> {
-  const response = await apiClientSejm.get(`acts/search?${searchParams}`);
+export async function getDzUBySearchParams(
+  searchParams: URLSearchParams,
+  signal?: AbortSignal
+): Promise<LegalActsResponseSearchTitle> {
+  const response = await apiClientSejm.get<LegalActsResponseSearchTitle>(
+    `acts/search?${searchParams}`,
+    { signal }
+  );
+
   return response.data;
 }
 
@@ -49,25 +56,38 @@ export async function getFirstDzUPoRD(): Promise<LegalActDetails> {
   return response.data;
 }
 
-export async function getFirstDzU(idDzU: string) {
-  const response = await apiClientSejm.get<LegalActDetails>(`acts/${idDzU}`);
+export async function getFirstDzU(idDzU: string, signal?: AbortSignal): Promise<LegalActDetails> {
+  const response = await apiClientSejm.get<LegalActDetails>(
+    `acts/${idDzU}`,
+    { signal }
+  );
   return response.data;
 
 }
 
 
-export const nameDzu = [
-  { PoRD: { startTekst: "", tuj: "" } },
-];
+export const nameDzuTable = {
+  PoRD: { idDzU: "DU/1997/602", paramsSearchTitleText: "prawo o ruchu drogowym" },
+  RozRejestracjaPojazdow: { idDzU: "DU/2024/1709", paramsSearchTitleText: "rejestracji i oznaczania pojazdów, wymagań dla tablic rejestracyjnych oraz wzorów innych dokumentów związanych z rejestracją pojazdów" },
+};
+
+
 export const gettedDzUTable = [
 
 ];
 
-export async function getDzUToTable(idDzU: string, paramsSearchTitleText: string) {
+export async function getDzUToTable(idDzU: string, paramsSearchTitleText: string, signal?: AbortSignal): Promise<LegalActsTable> {
 
   const dzUTable: LegalActsTable = [];
+
+  //Sprawdzenie paramsSearchTitleText
+  const title = paramsSearchTitleText.trim();
+  if (!title) {
+    throw new Error("Tytuł wyszukiwania nie może być pusty.");
+  }
+
   const searchParamsPoTj = new URLSearchParams({
-    [queryParametersSearchTitle.title.text]: paramsSearchTitleText,
+    [queryParametersSearchTitle.title.text]: title,
     [queryParametersSearchTitle.limit.text]: "100",
     [queryParametersSearchTitle.inForce.text]: "1",
     [queryParametersSearchTitle.sortBy.text]: "promulgation",
@@ -75,40 +95,49 @@ export async function getDzUToTable(idDzU: string, paramsSearchTitleText: string
   });
 
 
-  const startAct = await getFirstDzU(idDzU);
+  //Pobranie tekstu podstawowego
+  const startAct = await getFirstDzU(idDzU, signal);
+  console.log("startAct:", startAct)
+  //Wyszukanie id tekstu ujednoliconego
+  // {
+  //   "fileName": "D19970602Lj.pdf",
+  //     "type": "U"
+  // }
   const tekstUjednolicony = startAct.texts?.find(
     (text) => text.type === "U"
   )?.fileName;
-  if (startAct.ELI && tekstUjednolicony) {
-    console.log(
-      "TEKST UJEDNOLICONY:",
-      `https://api.sejm.gov.pl/eli/acts/${startAct.ELI}/text/U/${encodeURIComponent(tekstUjednolicony)}`,
-      tekstUjednolicony
-    );
-  }
+
+  //Pobranie obiektu references z aktu podstawowego
   const references = startAct?.references;
+
+  //Wyszukanie najnowszego id tekstu jednolitego
   const powiazaniaTJ =
     references?.["Inf. o tekście jednolitym"] ?? []; //{"id": "DU/2024/1251"},
-  const tjId = powiazaniaTJ[0]?.id;
+  const tjId = latestTjId(powiazaniaTJ);
 
-  //Dodanie pierwszego aktu do tablicy
+  let tjAct: LegalActDetails | undefined;
 
-
-  let tjAct, afterTjActs;
+  //Pobranie tekstu jednolitego
   if (tjId) {
-    tjAct = await getFirstDzU(tjId);
-    const promulgation = tjAct?.promulgation;
-    if (promulgation) {
-      searchParamsPoTj.set(
-        queryParametersSearchTitle.pubDateFrom.text,
-        promulgation,
-      );
-      afterTjActs = getDzUBySearchParams(searchParamsPoTj);
-    }
+    tjAct = await getFirstDzU(tjId, signal);
   }
+  const promulgation = tjAct?.promulgation || startAct.promulgation;
 
-  const firstAct = tjId ? tjAct : startAct;
+  if (!promulgation) {
+    throw new Error("Brak daty publikacji potrzebnej do wyszukiwania aktów.");
+  }
+  //Ustawienie daty do wyszukiwania, od której należy szukać zmian w katach prawnych
+  searchParamsPoTj.set(
+    queryParametersSearchTitle.pubDateFrom.text,
+    promulgation
+  );
 
+  //Pobranie aktów po dacie tekstu jednolitego, jeśli istnieje lub tekstu podstawowego.
+  const afterTjActs = await getDzUBySearchParams(searchParamsPoTj, signal);
+
+  //Ustawienie pierwszego aktu jako aktu jednolitego, jeśli istnieje lub tekstu podstawowego.
+  const firstAct = tjAct ?? startAct;
+  //Dodanie tekstu ujednoliconego do tablicy
   if (startAct && tekstUjednolicony) {
     dzUTable.push({
       ELI: startAct.ELI ?? "",
@@ -121,8 +150,8 @@ export async function getDzUToTable(idDzU: string, paramsSearchTitleText: string
       title: startAct.title ? `(tekst ujednolicony) ${startAct.title}` : "",
       displayAddress: startAct.displayAddress ?? "",
       promulgation: startAct.promulgation ?? "",
-      textPDF: `https://api.sejm.gov.pl/eli/acts/${startAct.ELI}/text/U/${encodeURIComponent(tekstUjednolicony)}`,
-      textHTML: startAct.textHTML ? `https://api.sejm.gov.pl/eli/acts/${startAct.ELI}/text.html` : "",
+      textPDF: startAct.ELI ? polishActApiUrls.unifiedPdf(startAct.ELI, tekstUjednolicony) : "",
+      textHTML: startAct.textHTML && startAct.ELI ? polishActApiUrls.html(startAct.ELI) : "",
       textDetails: "",
       changeDate: startAct.changeDate ?? "",
       type: startAct.type ?? "",
@@ -131,7 +160,8 @@ export async function getDzUToTable(idDzU: string, paramsSearchTitleText: string
   }
 
   if (afterTjActs) {
-    (await afterTjActs).items.map((item) => {
+    console.log("Po tekście jednolitym: ", afterTjActs);
+    for (const item of afterTjActs.items) {
       dzUTable.push({
         ELI: item.ELI ?? "",
         address: item.address ?? "",
@@ -143,15 +173,14 @@ export async function getDzUToTable(idDzU: string, paramsSearchTitleText: string
         title: item.title ?? "",
         displayAddress: item.displayAddress ?? "",
         promulgation: item.promulgation ?? "",
-        textPDF: item.textPDF ? `https://api.sejm.gov.pl/eli/acts/${item.ELI}/text.pdf` : "",
-        textHTML: item.textHTML ? `https://api.sejm.gov.pl/eli/acts/${item.ELI}/text.html` : "",
-        textDetails: item.address ? `https://isap.sejm.gov.pl/isap.nsf/DocDetails.xsp?id=${item.address}` : "",
+        textPDF: item.textPDF && item.ELI ? polishActApiUrls.pdf(item.ELI) : "",
+        textHTML: item.textHTML && item.ELI ? polishActApiUrls.html(item.ELI) : "",
+        textDetails: item.address ? polishActApiUrls.details(item.address) : "",
         changeDate: item.changeDate ?? "",
         type: item.type ?? "",
         status: item.status ?? "",
-
       });
-    })
+    }
   }
 
   if (firstAct) {
@@ -166,23 +195,42 @@ export async function getDzUToTable(idDzU: string, paramsSearchTitleText: string
       title: firstAct.title ?? "",
       displayAddress: firstAct.displayAddress ?? "",
       promulgation: firstAct.promulgation ?? "",
-      textPDF: firstAct.textPDF ? `https://api.sejm.gov.pl/eli/acts/${firstAct.ELI}/text.pdf` : "",
-      textHTML: firstAct.textHTML ? `https://api.sejm.gov.pl/eli/acts/${firstAct.ELI}/text.html` : "",
-      textDetails: firstAct.address ? `https://isap.sejm.gov.pl/isap.nsf/DocDetails.xsp?id=${firstAct.address}` : "",
+      textPDF: firstAct.textPDF && firstAct.ELI ? polishActApiUrls.pdf(firstAct.ELI) : "",
+      textHTML: firstAct.textHTML && firstAct.ELI ? polishActApiUrls.html(firstAct.ELI) : "",
+      textDetails: firstAct.address ? polishActApiUrls.details(firstAct.address) : "",
       changeDate: firstAct.changeDate ?? "",
       type: firstAct.type ?? "",
       status: firstAct.status ?? "",
-
     });
-  }
-  else {
-    return []
   }
 
   return dzUTable;
 }
 
+function latestTjId(powiazaniaTJ: LegalActReference[]) {
+  const latestTjId = powiazaniaTJ.reduce<
+    { id: string; year: number; position: number } | undefined
+  >((latest, { id }) => {
+    const match = /^DU\/(\d{4})\/(\d+)$/.exec(id ?? "");
 
+    if (!match) return latest;
+
+    const year = Number(match[1]);
+    const position = Number(match[2]);
+
+    if (
+      !latest ||
+      year > latest.year ||
+      (year === latest.year && position > latest.position)
+    ) {
+      return { id: id!, year, position };
+    }
+
+    return latest; //"DU/2024/1251"
+  }, undefined);
+
+  return latestTjId?.id;
+}
 // Pobiera akty w pętli
 // const obwieszczenia = await Promise.all(
 //   powiazaniaTJ.map(async ({ id }) => {

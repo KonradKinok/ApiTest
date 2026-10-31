@@ -2,13 +2,12 @@ import { Calculator } from "lucide-react";
 import { ButtonUniversal } from "../../components/CustomControls/ButtonUniversal/ButtonUniversal";
 import { FieldsetCustom } from "../../components/CustomControls/FieldsetCustom/FieldsetCustom";
 import styles from "./ApiLegalRegulationPolishPage.module.scss";
-import { useEffect, useState, type SubmitEvent } from "react";
+import { useState, type SubmitEvent } from "react";
 import { displayErrorMessage } from "../../globalFunctions/globalFunctions";
 import {
   getDzUToTable,
   getFirstDzU,
   // getFirstDzU,
-  getFirstDzUPoRD,
   getTypesLegalAct,
 } from "./apiPolishRegulationFunction";
 import type { AxiosResponse } from "axios";
@@ -26,6 +25,9 @@ import { useTypesLegalActSearch } from "../../hooks/useTypesLegalActSearch";
 import ApiSingleLegalAct from "./ApiSingleLegalAct";
 
 export default function ApiLegalRegulationPolishPage() {
+  const { refreshPoRD, dataPoRD, loadingPoRD, errorPoRD } = useAppContext();
+  const { dataRejestracja, loadingRejestracja, errorRejestracja } =
+    useAppContext();
   const tempDisplay = false;
   const { typesLegalActs } = useAppContext();
   const [, setTypesLegalAct] = useState<string[]>([]);
@@ -260,7 +262,6 @@ export default function ApiLegalRegulationPolishPage() {
                 <p>title: {item.title}</p>
                 <p>displayAddress: {item.displayAddress}</p>
                 <p>promulgation: {item.promulgation}</p>
-
                 <p>
                   textPDF{" "}
                   <a
@@ -306,6 +307,122 @@ export default function ApiLegalRegulationPolishPage() {
             fullWidth
           >
             First Act
+          </ButtonUniversal>
+        </FieldsetCustom>
+      </form>
+      <form className={styles.form} onSubmit={handleSubmitFirstAct}>
+        <FieldsetCustom legend="Akty prawne z tablicy">
+          {errorPoRD && <p>{errorPoRD}</p>}
+          {dataPoRD &&
+            dataPoRD.map((item) => (
+              <div key={item.ELI}>
+                <p>ELI: {item.ELI}</p>
+                <p>address: {item.address}</p>
+                <p>announcementDate: {item.announcementDate}</p>
+                <p>publisher: {item.publisher}</p>
+                <p>year: {item.year}</p>
+                <p>volume: {item.volume}</p>
+                <p>pos: {item.pos}</p>
+                <p>title: {item.title}</p>
+                <p>displayAddress: {item.displayAddress}</p>
+                <p>promulgation: {item.promulgation}</p>
+
+                <p>
+                  textPDF{" "}
+                  <a
+                    href={item.textPDF}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {item.textPDF}
+                  </a>
+                </p>
+                <p>
+                  textHTML{" "}
+                  <a
+                    href={item.textHTML}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {item.textHTML}
+                  </a>
+                </p>
+                <p>
+                  textDetails{" "}
+                  <a
+                    href={item.textDetails}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {item.textDetails}
+                  </a>
+                </p>
+                <p>changeDate: {item.changeDate}</p>
+                <p>type: {item.type}</p>
+                <p>status: {item.status}</p>
+              </div>
+            ))}
+          <hr />
+          {errorRejestracja && <p>{errorRejestracja}</p>}
+          {dataRejestracja &&
+            dataRejestracja.map((item) => (
+              <div key={item.ELI}>
+                <p>ELI: {item.ELI}</p>
+                <p>address: {item.address}</p>
+                <p>announcementDate: {item.announcementDate}</p>
+                <p>publisher: {item.publisher}</p>
+                <p>year: {item.year}</p>
+                <p>volume: {item.volume}</p>
+                <p>pos: {item.pos}</p>
+                <p>title: {item.title}</p>
+                <p>displayAddress: {item.displayAddress}</p>
+                <p>promulgation: {item.promulgation}</p>
+
+                <p>
+                  textPDF{" "}
+                  <a
+                    href={item.textPDF}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {item.textPDF}
+                  </a>
+                </p>
+                <p>
+                  textHTML{" "}
+                  <a
+                    href={item.textHTML}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {item.textHTML}
+                  </a>
+                </p>
+                <p>
+                  textDetails{" "}
+                  <a
+                    href={item.textDetails}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {item.textDetails}
+                  </a>
+                </p>
+                <p>changeDate: {item.changeDate}</p>
+                <p>type: {item.type}</p>
+                <p>status: {item.status}</p>
+              </div>
+            ))}
+          <ButtonUniversal
+            className={styles.submitButton}
+            type="button"
+            icon={<Calculator />}
+            fullWidth
+            isLoading={loadingPoRD}
+            loadingText="Pobieranie…"
+            onClick={() => void refreshPoRD()}
+          >
+            Odśwież PoRD
           </ButtonUniversal>
         </FieldsetCustom>
       </form>

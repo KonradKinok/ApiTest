@@ -248,6 +248,22 @@ export const temp = {
   "list_changed_acts": "https://api.sejm.gov.pl/eli/changes/acts?since={date}&limit={limit}&offset={offset}"
 };
 
+
+export const polishActApiUrls = {
+  pdf: (eli: string): string =>
+    `https://api.sejm.gov.pl/eli/acts/${eli}/text.pdf`,
+
+  html: (eli: string): string =>
+    `https://api.sejm.gov.pl/eli/acts/${eli}/text.html`,
+
+  unifiedPdf: (eli: string, fileName: string): string =>
+    `https://api.sejm.gov.pl/eli/acts/${eli}/text/U/${encodeURIComponent(fileName)}`,
+
+  details: (address: string): string =>
+    `https://isap.sejm.gov.pl/isap.nsf/DocDetails.xsp?id=${encodeURIComponent(address)}`,
+};
+
+
 export const searchParamsPrawoORuchuDrogowymTJ = {
   [queryParametersSearchTitle.title.text]: "jednolitego tekstu ustawy - Prawo o ruchu drogowym",
   [queryParametersSearchTitle.type.text]: typesLegalActs.obwieszczenie,
